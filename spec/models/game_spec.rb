@@ -10,6 +10,16 @@ RSpec.describe Game, type: :model do
     FactoryBot.create(:game_with_questions, user: user)
   end
 
+  it 'correct .current_game_question' do
+    question = game_w_questions.game_questions[0]
+    expect(game_w_questions.current_game_question).to eq(question)
+  end
+
+  it 'correct .previous_level' do
+    game_w_questions.current_level = 2
+    expect(game_w_questions.previous_level).to eq(1)
+  end
+
   # Тесты на работу фабрики создания новых игр
   context 'Game Factory' do
     it 'Game.create_game! new correct game' do
