@@ -2,12 +2,43 @@ require 'rails_helper'
 require 'support/my_spec_helper'
 
 RSpec.describe Game, type: :model do
+  # Текущий вопрос
+  let(:current_question) { game_w_questions.current_game_question }
+
   # Пользователь для создания игр
   let(:user) { FactoryBot.create(:user) }
 
   # Игра с вопросами для проверки работы
   let(:game_w_questions) do
     FactoryBot.create(:game_with_questions, user: user)
+  end
+
+  context 'group of test for .answer_current_question!' do
+    it '.answer_current_question! should continue the game if answer is right' do
+      game_w_questions.answer_current_question!(current_question.correct_answer_key)
+      expect(game_w_questions.status).to be(:in_progress)
+    end
+
+    it '.answer_current_question! should not continue the game if answer is wrong' do
+      game_w_questions.answer_current_question!('wrong')
+      expect(game_w_questions.status).to be(:fail)
+    end
+
+    it '.answer_current_question! should win the game of answer is right' do
+      game_w_questions.current_level = 14
+      game_w_questions.answer_current_question!(current_question.correct_answer_key)
+      prize = game_w_questions.prize
+      expect(game_w_questions.status).to be(:won)
+      expect(prize).to be(1000000)
+    end
+
+    it '.answer_current_question! when the time is over' do
+      game_w_questions.current_level = 5
+      game_w_questions.created_at = 1.hour.ago
+      game_w_questions.answer_current_question!(current_question.correct_answer_key)
+      expect(game_w_questions.status).to be(:timeout)
+      expect(game_w_questions.prize).to be > 0
+    end
   end
 
   it 'correct .current_game_question' do
