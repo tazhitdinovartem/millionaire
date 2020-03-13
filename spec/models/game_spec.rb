@@ -14,22 +14,26 @@ RSpec.describe Game, type: :model do
   end
 
   context 'group of test for .answer_current_question!' do
-    it '.answer_current_question! should return true if the answer in correct' do
-      answer = game_w_questions.answer_current_question!(current_question.correct_answer_key)
-      expect(answer).to be_truthy
-      expect(game_w_questions.finished?).to be_falsey
+    it '.answer_current_question! should return true if the answer is correct' do
+      expect(game_w_questions.answer_current_question!(current_question.correct_answer_key)).to be(true)
+      expect(game_w_questions.finished?).to be(false)
+    end
+
+    it '.answer_current_question! should return false if the answer is wrong' do
+      expect(game_w_questions.answer_current_question!('a')).to be(false)
+      expect(game_w_questions.finished?).to be(true)
     end
 
     it '.answer_current_question! should continue the game if the answer is correct' do
       game_w_questions.answer_current_question!(current_question.correct_answer_key)
       expect(game_w_questions.status).to be(:in_progress)
-      expect(game_w_questions.finished?).to be_falsey
+      expect(game_w_questions.finished?).to be(false)
     end
 
     it '.answer_current_question! should abort the game if the answer is wrong' do
       game_w_questions.answer_current_question!('a')
       expect(game_w_questions.status).to be(:fail)
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be(true)
     end
 
     it '.answer_current_question! should win the game if the last answer is correct' do
@@ -38,7 +42,7 @@ RSpec.describe Game, type: :model do
       prize = game_w_questions.prize
       expect(game_w_questions.status).to be(:won)
       expect(prize).to be(Game::PRIZES.max)
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be(true)
     end
 
     it '.answer_current_question! when the time is over' do
@@ -47,7 +51,7 @@ RSpec.describe Game, type: :model do
       game_w_questions.answer_current_question!(current_question.correct_answer_key)
       expect(game_w_questions.status).to be(:timeout)
       expect(game_w_questions.prize).to be > 0
-      expect(game_w_questions.finished?).to be_truthy
+      expect(game_w_questions.finished?).to be(true)
     end
   end
 
