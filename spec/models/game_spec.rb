@@ -19,11 +19,6 @@ RSpec.describe Game, type: :model do
       expect(game_w_questions.finished?).to be(false)
     end
 
-    it '.answer_current_question! should return false if the answer is wrong' do
-      expect(game_w_questions.answer_current_question!('a')).to be(false)
-      expect(game_w_questions.finished?).to be(true)
-    end
-
     it '.answer_current_question! should continue the game if the answer is correct' do
       game_w_questions.answer_current_question!(current_question.correct_answer_key)
       expect(game_w_questions.status).to be(:in_progress)
@@ -31,8 +26,10 @@ RSpec.describe Game, type: :model do
     end
 
     it '.answer_current_question! should abort the game if the answer is wrong' do
-      game_w_questions.answer_current_question!('a')
+      wrong_answer = %w[a b c d] - current_question.correct_answer_key.split("")
+      game_w_questions.answer_current_question!(wrong_answer)
       expect(game_w_questions.status).to be(:fail)
+      expect(game_w_questions.answer_current_question!(wrong_answer)).to be(false)
       expect(game_w_questions.finished?).to be(true)
     end
 
