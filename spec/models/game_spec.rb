@@ -26,7 +26,7 @@ RSpec.describe Game, type: :model do
     end
 
     it '.answer_current_question! should abort the game if the answer is wrong' do
-      wrong_answer = %w[a b c d] - current_question.correct_answer_key.split("")
+      wrong_answer = %w[a b c d].reject { |n| n == current_question.correct_answer_key }.sample
       game_w_questions.answer_current_question!(wrong_answer)
       expect(game_w_questions.status).to be(:fail)
       expect(game_w_questions.answer_current_question!(wrong_answer)).to be(false)
