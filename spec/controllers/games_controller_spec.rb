@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'support/my_spec_helper'
 RSpec.describe GamesController, type: :controller do
+
   let(:user) { FactoryBot.create(:user) }
   let(:admin) { FactoryBot.create(:user, is_admin: true) }
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
@@ -13,11 +14,35 @@ RSpec.describe GamesController, type: :controller do
     expect(flash[:alert]).to be
   end
 
-  
-
   context 'Usual user' do
 
     before(:each) { sign_in user }
+
+    it 'user takes money user takes money until the end of the game' do
+      game_w_questions.update_attribute(:current_level, 2)
+
+      put :take_money, id: game_w_questions.id
+      game = assigns(:game)
+      expect(game.finished?).to be(true)
+      expect(game.prize).to eq(200)
+
+      user.reload
+      expect(user.balance).to eq(200)
+
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:warning]).to be
+    end
+
+    it 'user cannot start two games' do
+      expect(game_w_questions.finished?).to be_falsey
+      expect { post :create }.to change(Game, :count).by(0)
+
+      game = assigns(:game)
+      expect(game).to be_nil
+
+      expect(response).to redirect_to(game_path(game_w_questions))
+      expect(flash[:alert]).to be
+    end
 
     it 'user cant #show another game' do
       another_game = FactoryBot.create(:game_with_questions)
