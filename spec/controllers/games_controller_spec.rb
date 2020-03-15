@@ -109,8 +109,8 @@ RSpec.describe GamesController, type: :controller do
     end
 
     it 'wrong player answer' do
-      wrong_answer = %w[a b c d].reject { |n| n == game_w_questions.current_game_question.correct_answer_key }.sample
-      put :answer, id: game_w_questions.id, letter: game_w_questions.answer_current_question!(wrong_answer)
+      wrong_letter = %w[a b c d].reject { |n| n == game_w_questions.current_game_question.correct_answer_key }.sample
+      put :answer, id: game_w_questions.id, letter: wrong_letter
 
       game = assigns(:game)
 
