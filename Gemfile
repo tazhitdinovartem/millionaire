@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby File.read('.ruby-version').strip
 gem 'rails', '~> 4.2.6'
 
 # Удобная админка для управления любыми сущностями
