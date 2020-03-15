@@ -108,6 +108,18 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to render_template('show')
     end
 
+    it 'wrong player answer' do
+      wrong_answer = %w[a b c d].reject { |n| n == game_w_questions.current_game_question.correct_answer_key }.sample
+      put :answer, id: game_w_questions.id, letter: game_w_questions.answer_current_question!(wrong_answer)
+
+      game = assigns(:game)
+
+      expect(game.finished?).to be(true)
+      expect(game.status).to be(:fail)
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:alert]).to be
+    end
+
     it 'answers correct' do
       put :answer, id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key
       game = assigns(:game)
