@@ -6,16 +6,34 @@ RSpec.describe GamesController, type: :controller do
   let(:admin) { FactoryBot.create(:user, is_admin: true) }
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
 
-  it 'kicks from #create' do
-    post :create, id: game_w_questions.id
+  context 'kicks from #help' do
+    it 'fifty_fifty help type' do
+      put :help, id: game_w_questions.id, help_type: :fifty_fifty
 
-    expect(response.status).not_to eq(200)
-    expect(response).to redirect_to(new_user_session_path)
-    expect(flash[:alert]).to be
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+    end
+
+    it 'friend_call help type' do
+      put :help, id: game_w_questions.id, help_type: :friend_call
+
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+    end
+
+    it 'audience_help help type' do
+      put :help, id: game_w_questions.id, help_type: :audience_help
+
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+    end
   end
 
-  it 'kicks from #help' do
-    put :help, id: game_w_questions.id
+  it 'kicks from #create' do
+    post :create
 
     expect(response.status).not_to eq(200)
     expect(response).to redirect_to(new_user_session_path)
