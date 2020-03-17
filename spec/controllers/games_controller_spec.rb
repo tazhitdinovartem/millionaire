@@ -68,6 +68,22 @@ RSpec.describe GamesController, type: :controller do
 
     before(:each) { sign_in user }
 
+    it 'uses fifty fifty help' do
+      expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+      expect(game_w_questions.fifty_fifty_used).to be(false)
+
+      put :help, id: game_w_questions.id, help_type: :fifty_fifty
+      game = assigns(:game)
+
+      expect(game.finished?).to be(false)
+      expect(game.fifty_fifty_used).to be(true)
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to be
+      fifty_fifty_result = game.current_game_question.help_hash[:fifty_fifty]
+      expect(fifty_fifty_result).to include(game.current_game_question.correct_answer_key)
+      expect(fifty_fifty_result.size).to eq(2)
+      expect(response).to redirect_to(game_path(game))
+    end
+
     it 'uses audience help' do
       expect(game_w_questions.current_game_question.help_hash[:audience_help]).not_to be
       expect(game_w_questions.audience_help_used).to be_falsey
