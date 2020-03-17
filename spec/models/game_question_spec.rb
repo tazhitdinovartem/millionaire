@@ -6,10 +6,20 @@ RSpec.describe GameQuestion, type: :model do
   end
   
   context 'game status' do
-    # Тест на правильную генерацию хеша с вариантами
+    it 'correct .help_hash' do
+      expect(game_question.help_hash).to eq({})
+
+      game_question.help_hash[:some_key1] = 'blabla1'
+      game_question.help_hash['some_key2'] = 'blabla2'
+
+      expect(game_question.save).to be(true)
+
+      gq = GameQuestion.find(game_question.id)
+
+      expect(gq.help_hash).to eq({some_key1: 'blabla1', 'some_key2' => 'blabla2'})
+    end
+
     it 'correct .variants' do
-      # Ожидаем, что варианты ответов будут соответствовать тем,
-      # которые мы написали выше
       expect(game_question.variants).to eq(
         'a' => game_question.question.answer2,
         'b' => game_question.question.answer1,
@@ -18,9 +28,7 @@ RSpec.describe GameQuestion, type: :model do
       )
     end
 
-    # Проверяем метод answer_correct?
     it 'correct .answer_correct?' do
-      # Именно под буквой b выше мы спрятали указатель на верный ответ
       expect(game_question.answer_correct?('b')).to be_truthy
     end
 
@@ -31,6 +39,30 @@ RSpec.describe GameQuestion, type: :model do
 
     it 'correct .correct_answer_key' do
       expect(game_question.correct_answer_key).to eq('b')
+    end
+  end
+
+  context 'user helpers' do
+    it 'correct audience_help' do
+      expect(game_question.help_hash).not_to include(:audience_help)
+  
+      game_question.add_audience_help
+  
+      expect(game_question.help_hash).to include(:audience_help)
+  
+      ah = game_question.help_hash[:audience_help]
+      expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
+    end
+
+    it 'correct fifty_fifity help' do
+      expect(game_question.help_hash).not_to include(:fifty_fifty)
+
+      game_question.add_fifty_fifty
+
+      expect(game_question.help_hash).to include(:fifty_fifty)
+      ff = game_question.help_hash[:fifty_fifty]
+      expect(ff).to include("b")
+      expect(ff.size).to eq(2)
     end
   end
 end
