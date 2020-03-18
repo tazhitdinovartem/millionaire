@@ -3,16 +3,16 @@ require 'rails_helper'
 RSpec.describe 'users/index', type: :view do
   before(:each) do
     assign(:users, [
-      FactoryBot.build_stubbed(:user, name: 'Вадик', balance: 5000),
-      FactoryBot.build_stubbed(:user, name: 'Миша', balance: 3000),
+      FactoryBot.build_stubbed(:user, name: 'UserOne', balance: 5000),
+      FactoryBot.build_stubbed(:user, name: 'UserTwo', balance: 3000),
     ])
 
     render
   end
 
   it 'renders player names' do
-    expect(rendered).to match 'Вадик'
-    expect(rendered).to match 'Миша'
+    expect(rendered).to match 'UserOne'
+    expect(rendered).to match 'UserTwo'
   end
 
   # Этот сценарий проверяет, что шаблон выводит баланс
@@ -23,6 +23,6 @@ RSpec.describe 'users/index', type: :view do
 
   # Этот сценарий проверяет, что юзеры в нужном порядке
   it 'renders player names in right order' do
-    expect(rendered).to match /Вадик.*Миша/m
+    expect(rendered).to match /UserOne.*UserTwo/m
   end
 end
