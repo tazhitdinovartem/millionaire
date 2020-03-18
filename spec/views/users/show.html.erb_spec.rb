@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe 'users/show', type: :view do
   before(:each) do
     user = assign(:user, FactoryBot.create(:user, name: 'UserForTest'))
+    game = assign(:games, [FactoryBot.create(:game_with_questions)])
     sign_in user
-    stub_template 'users/_game.html.erb' => 'Test text'
     render
   end
 
@@ -16,7 +16,7 @@ RSpec.describe 'users/show', type: :view do
     expect(rendered).to match 'Сменить имя и пароль'
   end
 
-  it 'renders users games' do
-    expect(rendered).to have_content 'Test text'
+  it 'renders users games table' do
+    assert_template partial: 'users/_game'
   end
 end
