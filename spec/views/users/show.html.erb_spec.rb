@@ -17,6 +17,6 @@ RSpec.describe 'users/show', type: :view do
   end
 
   it 'renders users games table' do
-    assert_template partial: 'users/_game'
+    render_template partial: 'users/_game'
   end
 end
