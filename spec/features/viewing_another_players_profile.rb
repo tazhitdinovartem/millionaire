@@ -1,17 +1,17 @@
 require 'rails_helper'
 
 RSpec.feature 'USER viewing another players profile', type: :feature do
-  let(:user_first) { FactoryBot.create(:user, name: 'user_first', id: 1) } 
-  let(:user_second) { FactoryBot.create(:user, name: 'user_second', id: 2) } 
+  let(:user_first) { FactoryBot.create(:user, name: 'user_first') } 
+  let(:user_second) { FactoryBot.create(:user, name: 'user_second') } 
 
-  let!(:Game_One) { FactoryBot.create(:game_with_questions,
+  let!(:game_one) { FactoryBot.create(:game_with_questions,
     id: 13,
     user: user_second, 
     current_level: 1, 
     prize: 250,
     created_at: Time.parse('2020-01-01 8:00')
   )}
-  let!(:Game_Two) { FactoryBot.create(:game_with_questions,
+  let!(:game_two) { FactoryBot.create(:game_with_questions,
     id: 14,
     user: user_second, 
     current_level: 6, 
