@@ -29,7 +29,7 @@ RSpec.feature 'USER viewing another players profile', type: :feature do
     visit '/'
     click_link 'user_second'
 
-    expect(page).to have_current_path '/users/2'
+    expect(page).to have_current_path "/users/#{user_second.id}"
     expect(page).to have_content 'user_second'
     expect(page).to have_no_content 'Сменить имя и пароль'
 
